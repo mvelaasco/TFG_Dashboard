@@ -1,4 +1,4 @@
-# TFG — Visualización y análisis de datos financieros
+# TFG Informática — Ingesta, visualización y análisis de datos financieros
 
 ## Requisitos
 
