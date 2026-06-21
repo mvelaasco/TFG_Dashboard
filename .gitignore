@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+*.sqlite3
+.idea/
+.vscode/
+AGENTS.md
+*pdf
+fill_assets.py

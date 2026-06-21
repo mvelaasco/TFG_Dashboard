@@ -1,0 +1,117 @@
+services:
+  db:
+    image: timescale/timescaledb:latest-pg16
+    shm_size: 256m
+    container_name: tfg_db
+    environment:
+      POSTGRES_USER: tfg_user
+      POSTGRES_PASSWORD: tfg_pass
+      POSTGRES_DB: tfg_finance
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tfg_user -d tfg_finance"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: tfg_redis
+    ports:
+      - "127.0.0.1:6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tfg_api
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    environment:
+      DB_HOST: db
+      REDIS_HOST: redis
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tfg_worker
+    command: celery -A core.celery_app worker --loglevel=info --concurrency=1
+    env_file:
+      - ./backend/.env
+    environment:
+      DB_HOST: db
+      REDIS_HOST: redis
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tfg_beat
+    command: celery -A core.celery_app beat --loglevel=info
+    env_file:
+      - ./backend/.env
+    environment:
+      REDIS_HOST: redis
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  flower:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tfg_flower
+    command: celery -A core.celery_app flower --port=5555
+    ports:
+      - "5555:5555"
+    env_file:
+      - ./backend/.env
+    environment:
+      REDIS_HOST: redis
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    container_name: tfg_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

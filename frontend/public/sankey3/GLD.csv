@@ -1,0 +1,17 @@
+antecedent_symbol,interval_label,count
+DIS,cruce,1.0
+INTC,cruce,1.0
+IYR,cruce,1.0
+SPY,cruce,1.0
+DIS,negativo,1.0
+INTC,negativo,1.0
+IYR,negativo,1.0
+SPY,negativo,2.0
+AMZN,positivo,1.0
+DIS,positivo,2.0
+GOOGL,positivo,1.0
+IYR,positivo,2.0
+JPM,positivo,1.0
+NVDA,positivo,2.0
+TLT,positivo,1.0
+UUP,positivo,1.0

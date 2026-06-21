@@ -1,0 +1,14 @@
+antecedent_symbol,interval_label,count
+AAPL,negativo,1.0
+DIS,negativo,1.0
+EEM,negativo,1.0
+INTC,negativo,1.0
+KO,negativo,1.0
+CLX,positivo,1.0
+DIA,positivo,1.0
+GOOGL,positivo,1.0
+HYG,positivo,1.0
+IYR,positivo,4.0
+NVDA,positivo,2.0
+SPY,positivo,1.0
+XLF,positivo,2.0
