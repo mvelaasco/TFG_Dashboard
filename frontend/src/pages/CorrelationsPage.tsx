@@ -154,8 +154,8 @@ function makeOverlayOption(
   const commonDates = [...baseMap.keys()].filter((d) => riskMap.has(d)).sort();
   if (commonDates.length < 2) return null;
 
-  const base0 = basePrices[0].close;
-  const risk0 = riskPrices[0].close;
+  const base0 = baseMap.get(commonDates[0])!;
+  const risk0 = riskMap.get(commonDates[0])!;
   const base100 = commonDates.map((d) => (baseMap.get(d)! / base0) * 100);
   const risk100 = commonDates.map((d) => (riskMap.get(d)! / risk0) * 100);
 
