@@ -7,6 +7,7 @@
 
 ## Puesta en marcha
 
+Fork al proyecto, o descarga mediante .zip
 ```bash
 cp backend/.env.example backend/.env   # editar con tus API keys
 
